@@ -13,10 +13,18 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.querySelectorAll('[data-nav]').forEach(link => {
-    link.addEventListener('click', () => {
+    link.addEventListener('click', (e) => {
       navLinks.classList.remove('open');
       navToggle.classList.remove('open');
       navToggle.setAttribute('aria-expanded', 'false');
+
+      // "#top" points at the sticky header, which browsers can fail to
+      // anchor-scroll to correctly. Force a true scroll-to-top instead.
+      if (link.getAttribute('href') === '#top') {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        history.replaceState(null, '', '#top');
+      }
     });
   });
 
