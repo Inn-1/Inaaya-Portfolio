@@ -275,10 +275,11 @@ section{ position:relative; padding:110px 24px; max-width:var(--maxw); margin:0 
 }
 .skill-icon{
   position:relative; z-index:1; width:48px; height:48px; border-radius:10px; display:flex;
-  align-items:center; justify-content:center;
+  align-items:center; justify-content:center; flex-shrink:0;
   background:linear-gradient(135deg,rgba(45,212,232,.14),rgba(139,127,251,.14)); color:var(--navy);
   margin-bottom:18px;
 }
+.skill-icon svg{ width:24px; height:24px; flex-shrink:0; }
 .skill-card h3{ position:relative; z-index:1; font-size:1.15rem; margin-bottom:8px; }
 .skill-blurb{
   position:relative; z-index:1; color:var(--ink-soft); font-size:.88rem; line-height:1.6; margin-bottom:18px;
