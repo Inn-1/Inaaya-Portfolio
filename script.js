@@ -1,6 +1,15 @@
 // ===================== Inaaya Khan Portfolio — interactivity =====================
 
+// Safety net: if anything below fails to run (blocked script, browser quirk,
+// slow load), never let content stay permanently invisible/unclickable.
+// This forces every .reveal element visible no matter what.
+function forceRevealAll() {
+  document.querySelectorAll('.reveal').forEach(el => el.classList.add('in-view'));
+}
+window.setTimeout(forceRevealAll, 2500);
+
 document.addEventListener('DOMContentLoaded', () => {
+ try {
 
   /* ---------- Mobile nav toggle ---------- */
   const navToggle = document.getElementById('navToggle');
@@ -30,16 +39,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ---------- Scroll reveal ---------- */
   const revealEls = document.querySelectorAll('.reveal');
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('in-view');
-        revealObserver.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+  if (!('IntersectionObserver' in window)) {
+    // Old/unsupported browser: just show everything immediately.
+    forceRevealAll();
+  } else {
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
 
-  revealEls.forEach(el => revealObserver.observe(el));
+    revealEls.forEach(el => revealObserver.observe(el));
+  }
 
   /* ---------- Active nav link highlight ---------- */
   const sections = document.querySelectorAll('main section[id], header#top');
@@ -83,4 +97,10 @@ document.addEventListener('DOMContentLoaded', () => {
     yearEl.textContent = yearEl.textContent.replace(/\b\d{4}\b/, now.getFullYear());
   }
 
+ } catch (err) {
+   // If anything above throws, don't let the whole page's interactivity die —
+   // at minimum make sure every section/button is visible and usable.
+   console.error('Portfolio script error:', err);
+   forceRevealAll();
+ }
 });
